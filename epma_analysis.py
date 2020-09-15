@@ -59,18 +59,18 @@ grain_1_pts = mean_and_normalize(df_dpoints[0:5])
 grain_2 = mean_and_normalize(df_dpoints[5:8])
 grain_3 = mean_and_normalize(df_dpoints[8:13])
 grain_4 = mean_and_normalize(df_dpoints[13:16])
-grain_5 = mean_and_normalize(df_dpoints[16:20])
-grain_6 = mean_and_normalize(df_dpoints[20:23])
-grain_7 = mean_and_normalize(df_dpoints[23:26])
-grain_8 = mean_and_normalize(df_dpoints[26:29])
-grain_9 = df_dpoints[29:33]
+grain_5 = mean_and_normalize(df_dpoints[16:21])
+grain_6 = mean_and_normalize(df_dpoints[21:24])
+grain_7 = mean_and_normalize(df_dpoints[24:27])
+grain_8 = mean_and_normalize(df_dpoints[27:30])
+grain_9 = df_dpoints[30:33]
 #skip row 32 because it's pure SiO2 in grain 9.
 #maybe skip row 33 too because it only has 69% total weight
 grain_9.drop(grain_9.index[2], inplace=True)
 grain_9 = mean_and_normalize(grain_9)
 grain_10 = mean_and_normalize(df_dpoints[-1:])
 #grain 10 only has 36% weight total. Maybe drop this grain
-print(df_dpoints[16:20].info)
+print(df_dpoints[30:33])
 # print(grain_10)
 
 
@@ -90,7 +90,7 @@ inputs: cat_weight = dict {key='atom': val=amu weight}
 returns: dict {key=atom: val=mols in sample}
 '''
 def convert(cat_weight, num_cat, num_o, weight_percent):
-    mol_wt_oxide = cat_weight * num_cat
+    mol_wt_oxide = cat_weight * num_cat + 15.9994*num_0 #second half just added
     mol_oxide = weight_percent / mol_wt_oxide
     mol_cat = mol_oxide * num_cat
     mol_oxygen = mol_oxide * num_o
@@ -146,9 +146,16 @@ def atomic_nums(samp, samp_num=0, num_O=6):
         print('{}\t{}'.format(atom, round(mol,2)))
 
 #call this to run. see above for params
-# atomic_nums(grain_1_ln_mols, samp_num=1, num_O=8)
-# atomic_nums(grain_1_pts_mols, 1, 8)
-# atomic_nums(grain_2_mols, 2, 8)
+atomic_nums(grain_1_ln_mols, samp_num=1, num_O=8)
+atomic_nums(grain_1_pts_mols, 1, 8)
+atomic_nums(grain_2_mols, 2, 8)
+atomic_nums(grain_3_mols, 3, 8)
+atomic_nums(grain_4_mols, 4, 8)
+atomic_nums(grain_5_mols, 5, 8)
+atomic_nums(grain_6_mols, 6, 8)
+atomic_nums(grain_7_mols, 7, 8)
+atomic_nums(grain_8_mols, 8, 8)
+atomic_nums(grain_9_mols, 9, 8)
 atomic_nums(grain_10_mols, 10, 8)
 
 # %%
@@ -173,3 +180,30 @@ Maybe redo grain 9 because it's weird and the weight percentages only added up t
 Grain_10 = SiO2 = Quartz. But with a modicum of Fe and Cr inclusions.
 grain 10 data only had total weight percent of 36%. Not sure if this is reliable data
 '''
+
+# Write results in a spreadsheet
+# %%
+print(df_dpoints[16:21])
+print(grain_5)
+atomic_nums(grain_5_mols, 5, 4)
+
+# %%
+std_weights = [0.45, 0.01, 1.07, 0.61, 0.02, 0.03, 0.79, 0.02, 0.05, 0.02, 0.02, 0.01, 0.01]
+std_weights1_2 = [0.09, 0.01, 0.13, 0.05, 0.02, 0.10, 0.01, 0.02, 0.03, 0.02, 0.01, 0.02, 0.01, 0.28]
+std_weights2 = [0.08, 0.00, 0.24, 0.17, 0.01, 0.15, 0.00, 0.01, 0.04, 0.02, 0.01, 0.00, 0.03, 0.24]
+
+std_weights3 = [0.01, 0.01, 0.23, 0.01, 0.01, 0.01, 0.02, 0.01, 0.01, 0.02, 0.00, 0.01, 0.01, 0.22
+]
+std_weights4 = [0.00, 0.00, 0.14, 0.01, 0.00, 0.01, 0.02, 0.06, 0.03, 0.01, 0.01, 0.01, 0.00, 0.06
+]
+std_weights5 = [0.02, 0.04, 0.18, 0.16, 0.01, 0.12, 0.00, 0.11, 0.23, 0.01, 0.04, 0.02, 0.02, 0.43
+]
+std_weights6 = [0.00, 0.08, 0.08, 0.07, 0.02, 0.38, 0.01, 0.06, 0.09, 0.03, 0.04, 0.01, 0.00, 0.52
+]
+std_weights7 = [0.02, 0.01, 0.22, 0.07, 0.02, 0.11, 0.01, 0.02, 0.00, 0.00, 0.03, 0.00, 0.00, 0.43
+]
+std_weights8 = [0.02, 0.00, 0.26, 0.12, 0.01, 0.13, 0.01, 0.00, 0.02, 0.00, 0.00, 0.01, 0.00, 0.49
+]
+std_weights9 = [0.29, 1.62, 17.57, 3.86, 0.01, 7.54, 5.25, 1.38, 13.30, 0.03, 0.22, 0.03, 0.37, 15.32
+]
+calc_mols(std_weights9).values()
